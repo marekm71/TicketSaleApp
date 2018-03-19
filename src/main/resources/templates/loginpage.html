@@ -1,0 +1,73 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4">
+<head>
+    <title>Logowanie</title>
+    <meta http-equiv="Content-Type" content="text/html" charset="UTF-8"/>
+    <link rel="stylesheet" th:href="@{/webjars/bootstrap/3.3.7-1/css/bootstrap.min.css}"/>
+    <script th:src="@{/webjars/jquery/3.2.1/jquery.min.js}"></script>
+    <script th:src="@{/webjars/bootstrap/3.3.7-1/bootstrap.min.js}"></script>
+</head>
+
+<body>
+<nav class="navbar navbar-inverse">
+    <div class="collapse navbar-collapse">
+        <ul class="nav navbar-nav">
+            <li class="active"><a href="/home">STRONA GŁÓWNA</a></li>
+            <li><a href="/repertoire">REPERTUAR</a></li>
+            <li><a href="/myaccount">MOJE KONTO</a></li>
+            <li sec:authorize="hasAuthority('USER')"><a href="/basket">KOSZYK</a></li>
+            <li sec:authorize="hasAuthority('ADMIN')">
+                <a href="/addperformancepanel">DODAJ WYDARZENIE</a>
+            </li>
+        </ul>
+        <ul class="nav navbar-nav navbar-right">
+            <li sec:authorize="hasAuthority('ADMIN')">
+                <a>Zalogowano jako Administrator</a>
+            </li>
+            <li sec:authorize="isAuthenticated()">
+                <a href="/logoutpanel"><span class="glyphicon glyphicon-log-out"></span> WYLOGUJ   </a>
+            </li>
+            <li sec:authorize="!isAuthenticated()">
+                <a href="/loginpanel"><span class="glyphicon glyphicon-log-in"></span> ZALOGUJ   </a>
+            </li>
+        </ul>
+    </div>
+</nav>
+
+
+<div class="container">
+    <h2>LOGOWANIE</h2>
+    <form class="form-horizontal" th:action="@{/loginpanel}" th:method="post">
+        <div th:if="${param.error}" class="alert alert-danger">
+            Niepoprawny login lub hasło.
+        </div>
+        <div class="form-group">
+            <label class="control-label col-sm-1">Login:</label>
+            <div class="col-sm-10">
+                <input type="text" class="form-control" placeholder="Wpisz login" name="username"/>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-sm-1">Hasło:</label>
+            <div class="col-sm-10">
+                <input type="password" class="form-control" placeholder="Wpisz Hasło" name="password"/>
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="col-sm-offset-1 col-sm-10">
+                <button type="submit" class="btn btn-default">ZALOGUJ</button>
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="col-sm-offset-1 col-sm-10">
+                <label>Jeśli nie masz konta, <a href="/registerpanel">załóż nowe konto</a></label>
+            </div>
+        </div>
+    </form>
+</div>
+
+
+</body>
+
+</html>

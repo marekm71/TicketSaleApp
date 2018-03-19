@@ -1,0 +1,76 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4">
+
+<head>
+    <title>Koszyk</title>
+    <meta http-equiv="Content-Type" content="text/html" charset="UTF-8"/>
+    <link rel="stylesheet" th:href="@{/webjars/bootstrap/3.3.7-1/css/bootstrap.min.css}"/>
+    <script th:src="@{/webjars/jquery/3.2.1/jquery.min.js}"></script>
+    <script th:src="@{/webjars/bootstrap/3.3.7-1/bootstrap.min.js}"></script>
+</head>
+
+<body>
+<nav class="navbar navbar-inverse">
+    <div class="collapse navbar-collapse">
+        <ul class="nav navbar-nav">
+            <li class="active"><a href="/home">STRONA GŁÓWNA</a></li>
+            <li><a href="/repertoire">REPERTUAR</a></li>
+            <li><a href="/myaccount">MOJE KONTO</a></li>
+            <li sec:authorize="hasAuthority('USER')"><a href="/basket">KOSZYK</a></li>
+            <li sec:authorize="hasAuthority('ADMIN')">
+                <a href="/addperformancepanel">DODAJ WYDARZENIE</a>
+            </li>
+        </ul>
+        <ul class="nav navbar-nav navbar-right">
+            <li sec:authorize="hasAuthority('ADMIN')">
+                <a>Zalogowano jako Administrator</a>
+            </li>
+            <li sec:authorize="isAuthenticated()">
+                <a href="/logoutpanel"><span class="glyphicon glyphicon-log-out"></span> WYLOGUJ   </a>
+            </li>
+            <li sec:authorize="!isAuthenticated()">
+                <a href="/loginpanel"><span class="glyphicon glyphicon-log-in"></span> ZALOGUJ   </a>
+            </li>
+        </ul>
+    </div>
+</nav>
+
+<div class="container">
+<h2>KOSZYK</h2>
+<div th:if="${allinbasket.size()==0}">
+    <h5>Twój koszyk jest pusty</h5>
+</div>
+<div th:if="${allinbasket.size()>0}">
+<table class="table">
+    <thead>
+    <tr>
+        <td><b>NUMER BILETU</b></td>
+        <td><b>WYDARZENIE</b></td>
+        <td><b>DATA</b></td>
+        <td></td>
+    </tr>
+    </thead>
+    <tbody th:each="ticket: ${allinbasket}">
+    <tr>
+        <td th:text="${ticket.id}"></td>
+        <td th:text="${ticket.performance.title}"></td>
+        <td>
+            <span th:text="${ticket.performance.date.getDayOfMonth()}"></span> /
+            <span th:text="${ticket.performance.date.getMonthValue()}"></span> /
+            <span th:text="${ticket.performance.date.getYear()}"></span> <br/>
+            <span th:text="${ticket.performance.date.getHour()}"></span> :
+            <span th:text="${ticket.performance.date.getMinute()}"></span>
+        </td>
+        <td><a th:href="${'/basket/removeticket/'+ticket.id}" class="btn btn-default" role="button" >Usuń</a></td>
+    </tr>
+    </tbody>
+</table>
+    <div class="right">
+        <a href="/submitorder" class="btn btn-info" role="button">Złóż zamówienie</a>
+    </div>
+</div>
+</div>
+</body>
+
+</html>

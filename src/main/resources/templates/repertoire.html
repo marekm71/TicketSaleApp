@@ -1,0 +1,66 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4">
+<head>
+    <title>Repertuar</title>
+    <meta http-equiv="Content-Type" content="text/html" charset="UTF-8"/>
+    <link rel="stylesheet" th:href="@{/webjars/bootstrap/3.3.7-1/css/bootstrap.min.css}"/>
+    <script th:src="@{/webjars/jquery/3.2.1/jquery.min.js}"></script>
+    <script th:src="@{/webjars/bootstrap/3.3.7-1/bootstrap.min.js}"></script>
+</head>
+
+<body>
+<nav class="navbar navbar-inverse">
+    <div class="collapse navbar-collapse">
+        <ul class="nav navbar-nav">
+            <li class="active"><a href="/home">STRONA GŁÓWNA</a></li>
+            <li><a href="/repertoire">REPERTUAR</a></li>
+            <li><a href="/myaccount">MOJE KONTO</a></li>
+            <li sec:authorize="hasAuthority('USER')"><a href="/basket">KOSZYK</a></li>
+            <li sec:authorize="hasAuthority('ADMIN')">
+                <a href="/addperformancepanel">DODAJ WYDARZENIE</a>
+            </li>
+        </ul>
+        <ul class="nav navbar-nav navbar-right">
+            <li sec:authorize="hasAuthority('ADMIN')">
+                <a>Zalogowano jako Administrator</a>
+            </li>
+            <li sec:authorize="isAuthenticated()">
+                <a href="/logoutpanel"><span class="glyphicon glyphicon-log-out"></span> WYLOGUJ   </a>
+            </li>
+            <li sec:authorize="!isAuthenticated()">
+                <a href="/loginpanel"><span class="glyphicon glyphicon-log-in"></span> ZALOGUJ   </a>
+            </li>
+        </ul>
+    </div>
+</nav>
+<div class="container">
+<h2>REPERTUAR</h2>
+<table class="table">
+    <thead>
+    <tr>
+        <td><b>TYTUŁ</b></td>
+        <td><b>DATA</b></td>
+        <td></td>
+        <td></td>
+    </tr>
+    </thead>
+    <tbody th:each="performance: ${allperformance}">
+    <tr>
+        <td><b><span th:text="${performance.title}"></span></b></td>
+        <td>
+            <span th:text="${performance.date.getDayOfMonth()}"></span> /
+            <span th:text="${performance.date.getMonthValue()}"></span> /
+            <span th:text="${performance.date.getYear()}"></span> <br/>
+            <span th:text="${performance.date.getHour()}"></span> :
+            <span th:text="${performance.date.getMinute()}"></span>
+        </td>
+        <td>ILOŚĆ MIEJSC: <span th:text="${performance.getNumberFreeTicket()}"></span></td>
+        <td><a th:href="${'/basket/addtobasket/'+performance.id}" class="btn btn-default" role="button">Dodaj do koszyka</a></td>
+    </tr>
+    </tbody>
+</table>
+</div>
+</body>
+
+</html>
